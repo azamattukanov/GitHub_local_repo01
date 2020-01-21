@@ -45,7 +45,7 @@
           datastore: "{{ datastore }}"
         hardware:
           memory_mb: "{{ vm_memory }}"
-          num_cpus: "{{ vm_vpcu }}"
+          num_cpus: "{{ num_cpus }}"
         state: poweredon
         networks:
         - name: VM Network

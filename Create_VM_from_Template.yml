@@ -1,6 +1,6 @@
 ---
 - hosts: all
-  gather_facts: false
+  gather_facts: yes
   connection: local
 
   vars:
@@ -44,13 +44,9 @@
         - size_gb: "{{ disk_size }}"
           datastore: "{{ datastore }}"
         hardware:
-          memory_mb: "{{ vm_memory }}"
-          num_cpus: "{{ cores_per_socket }}"
+          memory_mb: 4096
+          num_cpus: 4
         state: poweredon
-       networks:
-        - name: VM Network
-          type: dhcp
-wait_for_ip_address: True
     - name: Gather the facts for the VM
       vmware_guest_facts:
         validate_certs: no

@@ -46,7 +46,8 @@
         hardware:
           memory_mb: "{{ vm_memory }}"
           num_cpus: "{{ cores_per_socket }}"
-        state: poweredon
+        #state: poweredon
+        wait_for_ip_address: true
     - name: Gather the facts for the VM
       vmware_guest_facts:
         validate_certs: no

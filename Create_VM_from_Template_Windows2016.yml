@@ -1,0 +1,222 @@
+---
+- name: Deploy Windows Server 2016
+  hosts: localhost
+  connection: local
+  vars_prompt:
+    - name: "XenServer_IP_var"
+      prompt: "Enter XenServer IP Address"
+      private: no
+      default: "***.***.***.***"
+    - name: "XenServer_user_var"
+      prompt: "Enter XenServer username"
+      private: no
+      default: "root"
+    - name: "XenServer_pass_var"
+      prompt: "Enter XenServer password"
+      private: yes
+  vars:
+    template_var: "Windows Server 2016 Template (64-bit)"
+    folder_var: "Ansible Build Lab"
+    validate_certs_var : no
+    state_var: poweredon
+    linked_clone_var: yes
+    VMs_var:
+      - guest_var: "Lab-AD1"
+        hardware_var:
+          num_CPU_var: 1
+          num_CPU_cores_per_socket_var: 1
+          memory_MB_var: 4096
+        disk_var:
+          disk1_var:
+            size_var: 50
+            name_var: "Lab-AD1 : SYSTEM"
+          disk2_var:
+            size_var: 4
+            name_var: "Lab-AD1 : PAGEFILE"
+        network_var:
+          name_var: "VLAN 801"
+          type_var: "static"
+          ip_var: "***.***.***.***"
+          netmask_var: "***.***.***.***"
+          gateway_var: "***.***.***.***"
+      - guest_var: "Lab-BTS1"
+        hardware_var:
+          num_CPU_var: 2
+          num_CPU_cores_per_socket_var: 1
+          memory_MB_var: 8192
+        disk_var:
+          disk1_var:
+            size_var: 50
+            name_var: "Lab-BTS1 : SYSTEM"
+          disk2_var:
+            size_var: 4
+            name_var: "Lab-BTS1 : PAGEFILE"
+        network_var:
+          name_var: "VLAN 801"
+          type_var: "static"
+          ip_var: "***.***.***.***"
+          netmask_var: "***.***.***.***"
+          gateway_var: "***.***.***.***"
+      - guest_var: "Lab-IIS1"
+        hardware_var:
+          num_CPU_var: 1
+          num_CPU_cores_per_socket_var: 1
+          memory_MB_var: 4096
+        disk_var:
+          disk1_var:
+            size_var: 50
+            name_var: "Lab-IIS1 : SYSTEM"
+          disk2_var:
+            size_var: 4
+            name_var: "Lab-IIS1 : PAGEFILE"
+        network_var:
+          name_var: "VLAN 801"
+          type_var: "static"
+          ip_var: "***.***.***.***"
+          netmask_var: "***.***.***.***"
+          gateway_var: "***.***.***.***"
+      - guest_var: "Lab-SQL1"
+        hardware_var:
+          num_CPU_var: 2
+          num_CPU_cores_per_socket_var: 1
+          memory_MB_var: 8192
+        disk_var:
+          disk1_var:
+            size_var: 50
+            name_var: "Lab-SQL1 : SYSTEM"
+          disk2_var:
+            size_var: 4
+            name_var: "Lab-SQL1 : PAGEFILE"
+        network_var:
+          name_var: "VLAN 801"
+          type_var: "static"
+          ip_var: "***.***.***.***"
+          netmask_var: "***.***.***.***"
+          gateway_var: "***.***.***.***"
+    note_var: "Provisioned by Ansible"
+    SR_var: "Hardware HBA virtual disk storage"
+  tasks:
+    - name: Create VM Lab-AD1
+      xenserver_guest:
+        hostname: "{{ XenServer_IP_var }}"
+        username: "{{ XenServer_user_var }}"
+        password: "{{ XenServer_pass_var }}"
+        validate_certs: "{{ validate_certs_var }}"
+        folder: "{{ folder_var }}"
+        state: "{{ state_var }}"
+        template: "{{ template_var }}"
+        linked_clone: "{{ linked_clone_var }}"
+        name_desc: "{{ note_var }}"
+        name: "{{ item['guest_var'] }}"
+        disks:
+        - size_gb: "{{ item['disk_var']['disk1_var']['size_var'] }}"
+          name: "{{ item['disk_var']['disk1_var']['name_var'] }}"
+          sr: "{{ SR_var }}"
+        - size_gb: "{{ item['disk_var']['disk2_var']['size_var'] }}"
+          name: "{{ item['disk_var']['disk2_var']['name_var'] }}"
+          sr: "{{ SR_var }}"
+        hardware:
+          num_cpus: "{{ item['hardware_var']['num_CPU_var'] }}"
+          num_cpu_cores_per_socket: "{{ item['hardware_var']['num_CPU_cores_per_socket_var'] }}"
+          memory_mb: "{{ item['hardware_var']['memory_MB_var'] }}"
+        networks:
+        - name: "{{ item['network_var']['name_var'] }}"
+          type: "{{ item['network_var']['type_var'] }}"
+          ip: "{{ item['network_var']['ip_var'] }}"
+          netmask: "{{ item['network_var']['netmask_var'] }}"
+          gateway: "{{ item['network_var']['gateway_var'] }}"
+      with_items: "{{ VMs_var }}"
+      when: item['guest_var'] == "Lab-AD1"
+    - name: Create VM Lab-BTS1
+      xenserver_guest:
+        hostname: "{{ XenServer_IP_var }}"
+        username: "{{ XenServer_user_var }}"
+        password: "{{ XenServer_pass_var }}"
+        validate_certs: "{{ validate_certs_var }}"
+        folder: "{{ folder_var }}"
+        state: "{{ state_var }}"
+        template: "{{ template_var }}"
+        linked_clone: "{{ linked_clone_var }}"
+        name_desc: "{{ note_var }}"
+        name: "{{ item['guest_var'] }}"
+        disks:
+        - size_gb: "{{ item['disk_var']['disk1_var']['size_var'] }}"
+          name: "{{ item['disk_var']['disk1_var']['name_var'] }}"
+          sr: "{{ SR_var }}"
+        - size_gb: "{{ item['disk_var']['disk2_var']['size_var'] }}"
+          name: "{{ item['disk_var']['disk2_var']['name_var'] }}"
+          sr: "{{ SR_var }}"
+        hardware:
+          num_cpus: "{{ item['hardware_var']['num_CPU_var'] }}"
+          num_cpu_cores_per_socket: "{{ item['hardware_var']['num_CPU_cores_per_socket_var'] }}"
+          memory_mb: "{{ item['hardware_var']['memory_MB_var'] }}"
+        networks:
+        - name: "{{ item['network_var']['name_var'] }}"
+          type: "{{ item['network_var']['type_var'] }}"
+          ip: "{{ item['network_var']['ip_var'] }}"
+          netmask: "{{ item['network_var']['netmask_var'] }}"
+          gateway: "{{ item['network_var']['gateway_var'] }}"
+      with_items: "{{ VMs_var }}"
+      when: item['guest_var'] == "Lab-BTS1"
+    - name: Create VM Lab-IIS1
+      xenserver_guest:
+        hostname: "{{ XenServer_IP_var }}"
+        username: "{{ XenServer_user_var }}"
+        password: "{{ XenServer_pass_var }}"
+        validate_certs: "{{ validate_certs_var }}"
+        folder: "{{ folder_var }}"
+        state: "{{ state_var }}"
+        template: "{{ template_var }}"
+        linked_clone: "{{ linked_clone_var }}"
+        name_desc: "{{ note_var }}"
+        name: "{{ item['guest_var'] }}"
+        disks:
+        - size_gb: "{{ item['disk_var']['disk1_var']['size_var'] }}"
+          name: "{{ item['disk_var']['disk1_var']['name_var'] }}"
+          sr: "{{ SR_var }}"
+        - size_gb: "{{ item['disk_var']['disk2_var']['size_var'] }}"
+          name: "{{ item['disk_var']['disk2_var']['name_var'] }}"
+          sr: "{{ SR_var }}"
+        hardware:
+          num_cpus: "{{ item['hardware_var']['num_CPU_var'] }}"
+          num_cpu_cores_per_socket: "{{ item['hardware_var']['num_CPU_cores_per_socket_var'] }}"
+          memory_mb: "{{ item['hardware_var']['memory_MB_var'] }}"
+        networks:
+        - name: "{{ item['network_var']['name_var'] }}"
+          type: "{{ item['network_var']['type_var'] }}"
+          ip: "{{ item['network_var']['ip_var'] }}"
+          netmask: "{{ item['network_var']['netmask_var'] }}"
+          gateway: "{{ item['network_var']['gateway_var'] }}"
+      with_items: "{{ VMs_var }}"
+      when: item['guest_var'] == "Lab-IIS1"
+    - name: Create VM Lab-SQL1
+      xenserver_guest:
+        hostname: "{{ XenServer_IP_var }}"
+        username: "{{ XenServer_user_var }}"
+        password: "{{ XenServer_pass_var }}"
+        validate_certs: "{{ validate_certs_var }}"
+        folder: "{{ folder_var }}"
+        state: "{{ state_var }}"
+        template: "{{ template_var }}"
+        linked_clone: "{{ linked_clone_var }}"
+        name_desc: "{{ note_var }}"
+        name: "{{ item['guest_var'] }}"
+        disks:
+        - size_gb: "{{ item['disk_var']['disk1_var']['size_var'] }}"
+          name: "{{ item['disk_var']['disk1_var']['name_var'] }}"
+          sr: "{{ SR_var }}"
+        - size_gb: "{{ item['disk_var']['disk2_var']['size_var'] }}"
+          name: "{{ item['disk_var']['disk2_var']['name_var'] }}"
+          sr: "{{ SR_var }}"
+        hardware:
+          num_cpus: "{{ item['hardware_var']['num_CPU_var'] }}"
+          num_cpu_cores_per_socket: "{{ item['hardware_var']['num_CPU_cores_per_socket_var'] }}"
+          memory_mb: "{{ item['hardware_var']['memory_MB_var'] }}"
+        networks:
+        - name: "{{ item['network_var']['name_var'] }}"
+          type: "{{ item['network_var']['type_var'] }}"
+          ip: "{{ item['network_var']['ip_var'] }}"
+          netmask: "{{ item['network_var']['netmask_var'] }}"
+          gateway: "{{ item['network_var']['gateway_var'] }}"
+      with_items: "{{ VMs_var }}"
+      when: item['guest_var'] == "Lab-SQL1"

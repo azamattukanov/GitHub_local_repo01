@@ -44,8 +44,8 @@
         - size_gb: "{{ disk_size }}"
           datastore: "{{ datastore }}"
         hardware:
-          memory_mb: 4096
-          num_cpus: 4
+          memory_mb: "{{ vm_memory }}"
+          num_cpus: "{{ cores_per_socket }}"
         state: poweredon
     - name: Gather the facts for the VM
       vmware_guest_facts:

@@ -46,7 +46,10 @@
         hardware:
           memory_mb: "{{ vm_memory }}"
           num_cpus: "{{ cores_per_socket }}"
-        #state: poweredon
+        state: poweredon
+        networks:
+        - name: VM Network
+          type: dhcp
         wait_for_ip_address: true
     - name: Gather the facts for the VM
       vmware_guest_facts:

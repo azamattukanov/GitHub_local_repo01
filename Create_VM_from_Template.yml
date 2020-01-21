@@ -47,6 +47,7 @@
           memory_mb: "{{ vm_memory }}"
           #num_cpu_cores_per_socket: "{{ num_cpu_cores_per_socket }}"
           #num_cpus: "{{ num_cpus }}"
+          num_cpus: 2
         state: poweredon
         networks:
         - name: VM Network

@@ -42,7 +42,7 @@
         folder: '{{ vsphere_folder }}'
         disk:
         - size_gb: "{{ disk_size }}"
-          ##type: "{{ disk_type | default('thin') }}"
+          type: thick
           datastore: "{{ datastore }}"
         hardware:
           memory_mb: "{{ vm_memory }}"
